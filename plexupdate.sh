@@ -32,7 +32,7 @@ echo "Cur Ver: $curversion" >> $resultFile
 if [ "$newversion" != "$curversion" ]
 # New Version Available
 then
-	/usr/syno/bin/synonotify PKGHasUpgrade '{"[%HOSTNAME%]": $(hostname), "[%OSNAME%]": "Synology", "[%PKG_HAS_UPDATE%]": "PlexMediaServer", "[%COMPANY_NAME%]": "Plex Inc"}'
+	/usr/syno/bin/synonotify PKGHasUpgrade '{"%PKG_HAS_UPDATE%": "Plex Media Server"}'
 	CPU=$(uname -m)
 	url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
 	# Download the file
