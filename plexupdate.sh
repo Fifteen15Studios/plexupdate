@@ -22,15 +22,15 @@ jq=$(curl -s https://plex.tv/api/downloads/5.json)
 
 # Get version numbers
 # For some reason the part after the dash changes, so exclude it
-newversion=$(echo ${jq} | jq -r '.nas."Synology (DSM 7)".version' | cut -d'-' -f 1)
-echo "New Ver: $newversion" > $resultFile
-curversion=$(synopkg version "PlexMediaServer" | cut -d'-' -f 1)
-echo "Cur Ver: $curversion" >> $resultFile
+newVersion=$(echo ${jq} | jq -r '.nas."Synology (DSM 7)".version' | cut -d'-' -f1)
+curVersion=$(synopkg version PlexMediaServer)
+echo "Latest Version:    $newVersion" >> $resultFile
+echo "Installed Version: $curVersion" >> $resultFile
 
 # Compare version numbers
-if [ "$newversion" != "$curversion" ]
-# New Version Available
-then
+dpkg --compare-versions "$newVersion" "gt" "$curVersion"
+if [ $? -eq "0" ]; then
+	echo "New version available! Updating now..." >> $resultFile
 	/usr/syno/bin/synonotify PKGHasUpgrade '{"%PKG_HAS_UPDATE%": "Plex Media Server"}'
 	CPU=$(uname -m)
 	url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
