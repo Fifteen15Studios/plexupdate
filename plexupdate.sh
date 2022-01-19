@@ -7,8 +7,6 @@
 # @author @martinorob https://github.com/martinorob
 # https://github.com/martinorob/plexupdate/
 
-# Volume where Plex is installed
-VOLUME=$(echo "/volume1")
 # Location of temp folder for this script
 tmpFolder="/tmp/plex"
 resultFile=$tmpFolder/result.txt
