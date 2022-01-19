@@ -17,9 +17,8 @@ resultFile=$tmpFolder/result.txt
 mkdir -p $tmpFolder/ > /dev/null 2>&1
 
 # Get information we need
-token=$(cat ${VOLUME}/PlexMediaServer/AppData/Plex\ Media\ Server/Preferences.xml | grep -oP 'PlexOnlineToken="\K[^"]+')
-url=$(echo "https://plex.tv/api/downloads/5.json?channel=plexpass&X-Plex-Token=$token")
-jq=$(curl -s ${url})
+echo "Checking for Plex updates..." > $resultFile
+jq=$(curl -s https://plex.tv/api/downloads/5.json)
 
 # Get version numbers
 # For some reason the part after the dash changes, so exclude it
