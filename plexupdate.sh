@@ -18,11 +18,12 @@ function updatePlex() {
   # Get information we need
   echo "Checking for Plex updates..."
   jq=$(curl -s https://plex.tv/api/downloads/5.json)
+  plexPackageName=$(synopkg list | grep Plex | cut -d'-' -f1)
 
   # Get version numbers
   # For some reason the part after the dash changes, so exclude it
   newVersion=$(echo ${jq} | jq -r '.nas."Synology (DSM 7)".version' | cut -d'-' -f1)
-  curVersion=$(synopkg version PlexMediaServer)
+  curVersion=$(synopkg version "$plexPackageName")
   echo "Latest Version:    $newVersion"
   echo "Installed Version: $curVersion"
 
@@ -43,7 +44,7 @@ function updatePlex() {
     sleep 30
     
     # Start Plex and cleanup
-    synopkg start PlexMediaServer
+    synopkg start "$plexPackageName"
     rm -rf $tmpFolder/*.spk
   else
     echo "No new version available."
