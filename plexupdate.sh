@@ -30,23 +30,23 @@ echo "Installed Version: $curVersion" >> $resultFile
 # Compare version numbers
 dpkg --compare-versions "$newVersion" "gt" "$curVersion"
 if [ $? -eq "0" ]; then
-	echo "New version available! Updating now..." >> $resultFile
-	/usr/syno/bin/synonotify PKGHasUpgrade '{"%PKG_HAS_UPDATE%": "Plex Media Server"}'
-	CPU=$(uname -m)
-	url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
-	
-	# Download the update
-	/bin/wget $url -P $tmpFolder/
-	filename=$(basename $url)
-	
-	# Install the update
-	/usr/syno/bin/synopkg install $tmpFolder/$filename
-	sleep 30
-	
-	# Start Plex and cleanup
-	/usr/syno/bin/synopkg start PlexMediaServer
-	rm -rf $tmpFolder/*.spk
+  echo "New version available! Updating now..." >> $resultFile
+  /usr/syno/bin/synonotify PKGHasUpgrade '{"%PKG_HAS_UPDATE%": "Plex Media Server"}'
+  CPU=$(uname -m)
+  url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
+  
+  # Download the update
+  /bin/wget $url -P $tmpFolder/
+  filename=$(basename $url)
+  
+  # Install the update
+  /usr/syno/bin/synopkg install $tmpFolder/$filename
+  sleep 30
+  
+  # Start Plex and cleanup
+  /usr/syno/bin/synopkg start PlexMediaServer
+  rm -rf $tmpFolder/*.spk
 else
-	echo "No new version available." >> $resultFile
+  echo "No new version available." >> $resultFile
 fi
 exit
