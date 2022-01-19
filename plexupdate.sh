@@ -34,17 +34,19 @@ if [ $? -eq "0" ]; then
 	/usr/syno/bin/synonotify PKGHasUpgrade '{"%PKG_HAS_UPDATE%": "Plex Media Server"}'
 	CPU=$(uname -m)
 	url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
-	# Download the file
+	
+	# Download the update
 	/bin/wget $url -P $tmpFolder/
-	# Get filename from URL
-	slashes=$(awk -F"/" '{print NF-1}' <<< "${url}")
-	filename=$(echo $url | cut -d '/' -f $(expr $slashes + 1))
-	# Install the file
-	/usr/syno/bin/synopkg install $tmpFolder/$filename >> $resultFile
+	filename=$(basename $url)
+	
+	# Install the update
+	/usr/syno/bin/synopkg install $tmpFolder/$filename
 	sleep 30
-	/usr/syno/bin/synopkg start "Plex Media Server"
+	
+	# Start Plex and cleanup
+	/usr/syno/bin/synopkg start PlexMediaServer
 	rm -rf $tmpFolder/*.spk
 else
-	echo "No new version available" >> $resultFile
+	echo "No new version available." >> $resultFile
 fi
 exit
